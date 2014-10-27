@@ -31,31 +31,37 @@ function advanced_faq_shortcode( $atts ) {
 		//		'tag_name'               => 'tag_name',
 		//		's'                      => 'search_q',
 		//		'pagination'             => false,
-				'orderby'                => 'title',
+				'orderby'                => array(
+					'title' => 'ASC',
+				),
 		'cache_results'          => false,
 		'update_post_meta_cache' => false,
 		'update_post_term_cache' => false,
 	);
 
 	if ( count( $categories ) ) {
-		$args['category_name'] = implode( ',', $categories );
+		$args['tax_query'] = $categories;
 	}
 
 	if ( count( $tags ) ) {
-		$args['tag_name'] = implode( ',', $tags );
+		$args['tax_query'] = $tags;
 	}
 
 	// The Query
 	$query = new WP_Query( $args );
 
-	switch ( $layouts ) {
-		case 'dl' :
-			$faqs = advanced_faq_shortcode_dl( $query );
-			break;
-		default:
-			$faqs = advanced_faq_shortcode_dl( $query );
-			break;
-	}
+
+	$tax = fetchByCategories();
+
+//
+//	switch ( $layouts ) {
+//		case 'dl' :
+//			$faqs = advanced_faq_shortcode_dl( $query );
+//			break;
+//		default:
+//			$faqs = advanced_faq_shortcode_dl( $query );
+//			break;
+//	}
 
 	// Restore original Post Data
 	wp_reset_postdata();
@@ -93,4 +99,22 @@ function advanced_faq_shortcode_dl( $query ) {
 	}
 
 	return implode( "\n", $faqs );
+}
+
+
+function fetchByCategories() {
+	$taxonomies = array(
+		'advanced_faq_category',
+	);
+
+	$args = array(
+		'orderby'           => 'name',
+		'order'             => 'ASC',
+		'hide_empty'        => true,
+		'include'           => array(),
+		'fields'            => 'all',
+		'slug'              => '',
+	);
+
+	return get_terms($taxonomies, $args);
 }
