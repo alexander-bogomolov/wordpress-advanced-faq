@@ -1,12 +1,24 @@
 <?php
 
+/**
+ * @author  Alexander Bogomolov <wordpress@bogomolov.de>
+ */
 class AdvancedFaqTaxonomies {
 
+
+
+	/**
+	 *
+	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'buildCategory' ), 0 );
 		add_action( 'init', array( $this, 'buildTag' ), 0 );
 	}
 
+
+	/**
+	 *
+	 */
 	public function buildCategory() {
 
 		$labels = array(
@@ -38,6 +50,10 @@ class AdvancedFaqTaxonomies {
 		register_taxonomy( 'advanced_faq_category', array( 'advanced_faq' ), $args );
 	}
 
+
+	/**
+	 *
+	 */
 	public function buildTag() {
 
 		$labels = array(

@@ -1,27 +1,54 @@
 <?php
 
+
+/**
+ * @author  Alexander Bogomolov <wordpress@bogomolov.de>
+ */
 class AdvancedFaqShortcodes {
 
-	protected $search_query = null;
+
+
+	/**
+	 * @var string
+	 */
+	protected $search_query = '';
+
+	/**
+	 * @var array
+	 */
 	protected $filter_categories = array();
+
+	/**
+	 * @var array
+	 */
 	protected $filter_tags = array();
-	protected $display_layout = null;
 
+	/**
+	 * @var string
+	 */
+	protected $display_layout = 'default';
 
+	/**
+	 *
+	 */
 	public function __construct() {
 
 		add_shortcode( 'advanced-faq', array( $this, 'addShortcode' ) );
 	}
 
+	/**
+	 * @param array       $atts
+	 * @param string|null $content
+	 *
+	 * @return string
+	 */
+	public function addShortcode( array $atts, $content = NULL ) {
 
-	public function addShortcode( $atts ) {
-
-		// Attributes
 		extract( shortcode_atts(
 				array(
 					'categories' => '',
 					'tags'       => '',
-					'layout'     => '',
+					'layout'     => 'default',
 				),
 				$atts )
 		);
@@ -36,36 +63,47 @@ class AdvancedFaqShortcodes {
 			array_walk( $this->filter_tags, 'trim' );
 		}
 
-		$layouts = array( 'dl' );
-		if ( ! in_array( $layout, $layouts ) ) {
-			$layout = null;
+		if ( ! empty( $layout ) ) {
+			$layouts = array( 'default', 'questions-first' );
+			if ( ! in_array( $layout, $layouts ) ) {
+				$layout = 'default';
+			}
 		}
 		$this->display_layout = $layout;
 
-		switch ( $layouts ) {
-			default:
-				//				$faqs = $this->renderDefinitionList();
-				$faqs = $this->renderSeparated();
-				break;
-		}
 
-		return $faqs;
+		return $this->render();
 	}
 
+	/**
+	 * @return string
+	 */
+	public function render() {
+		switch ( $this->display_layout ) {
+			case 'questions-first' :
+				return $this->renderQuestionsFirstLayout();
+			default:
+				return $this->renderDefaultLayout();
+				break;
+		}
+	}
 
+	/**
+	 * @return array
+	 */
 	public function fetch() {
 		$results = array();
 		$args    = array(
 			'post_type'              => 'advanced_faq',
 			'post_status'            => '1',
 			//		's'                      => 'search_q',
-			'pagination'             => false,
+			'pagination'             => FALSE,
 			'orderby'                => array(
 				'title' => 'ASC',
 			),
-			'cache_results'          => false,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
+			'cache_results'          => FALSE,
+			'update_post_meta_cache' => FALSE,
+			'update_post_term_cache' => FALSE,
 		);
 
 		if ( count( $this->filter_categories ) ) {
@@ -81,12 +119,9 @@ class AdvancedFaqShortcodes {
 			}
 		}
 
-		// The Query
 		$query = new WP_Query( $args );
-
 		$posts = $query->get_posts();
 
-		// The Loop
 		if ( $posts ) {
 			foreach ( $posts as $post ) {
 				/** @var WP_Post $post */
@@ -117,60 +152,70 @@ class AdvancedFaqShortcodes {
 		return $results;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function renderDefaultLayout() {
 
-	public function renderDefinitionList() {
-
-		$faqs    = array();
+		$output  = array();
 		$results = $this->fetch();
 
 		foreach ( $results as $category_slug => $entries ) {
 			/** @var WP_Post $post */
 
-			$question_id = 'faq-category-' . $entries[0]['category']->slug;
+			$question_id = 'faq-' . $entries[0]['category']->slug;
 
-			$faqs[] = '<h2 id="' . $question_id . '">' . $entries[0]['category']->name . '</h2>';
-			$faqs[] = '<dl>';
+			$output[] = '<section id="' . $question_id . '">';
+			$output[] = '<h2 class="faq-category">' . $entries[0]['category']->name . '</h2>';
+			$output[] = '<dl>';
 
 			foreach ( $entries as $entry ) {
-				$question_id = 'faq-question-' . $entry['category']->slug . '-' . $entry['post']->ID;
+				$question_id = 'faq-' . $entry['category']->slug . '-' . $entry['post']->ID;
 
-				$faqs[] = '<dt id="' . $question_id . '">' . $entry['post']->post_title . '</dt>';
-				$faqs[] = '<dd>' . $entry['post']->post_content . '</dd>';
+				$output[] = '<dt class="faq-question" id="' . $question_id . '">';
+				$output[] = $entry['post']->post_title;
+				$output[] = '</dt>';
+				$output[] = '<dd class="faql-answer">' . do_shortcode( $entry['post']->post_content ) . '</dd>';
 			}
 
-			$faqs[] = '</dl>';
+			$output[] = '</dl>';
+			$output[] = '</section>';
 		}
 
-		return implode( "\n", $faqs );
+		return implode( "\n", $output );
 	}
 
 
-	public function renderSeparated() {
+	public function renderQuestionsFirstLayout() {
 
 		$results   = $this->fetch();
 		$questions = array();
 		$answers   = array();
 
 		foreach ( $results as $category_slug => $entries ) {
-			/** @var WP_Post $post */
+			$questions[] = '<section id="' . 'faq-category-' . $entries[0]['category']->slug . '-questions' . '">';
+			$questions[] = '<h2 class="faq-category">' . $entries[0]['category']->name . '</h2>';
+			$questions[] = '<ol class="faq-question-list">';
 
-			$question_id = 'faq-category-' . $entries[0]['category']->slug;
-
-			$questions[] = '<h2 id="' . $question_id . '">' . $entries[0]['category']->name . '</h2>';
-			$questions[] = '<ul>';
-			$answers[] = '<h2 id="' . $question_id . '">' . $entries[0]['category']->name . '</h2>';
-			$answers[]   = '<dl>';
+			$answers[] = '<section id="' . 'faq-category-' . $entries[0]['category']->slug . '-answers' . '">';
+			$answers[] = '<h2>' . $entries[0]['category']->name . '</h2>';
+			$answers[] = '<dl>';
 
 			foreach ( $entries as $entry ) {
 				$question_id = 'faq-question-' . $entry['category']->slug . '-' . $entry['post']->ID;
 
-				$questions[] = '<li><a href="#' . $question_id . '">' . $entry['post']->post_title . '</a></li>';
+				$questions[] = '<li class="faq-question-item"><a href="#' . $question_id . '">' .
+				               $entry['post']->post_title . '</a></li>';
 
-				$answers[] = '<dt>' . $entry['post']->post_title . '</dt><dd>' . $entry['post']->post_content . '</dd>';
+				$answers[] = '<dt id="' . $question_id . '">' . $entry['post']->post_title . '</dt>';
+				$answers[] = '<dd > ' . do_shortcode( $entry['post']->post_content ) . ' </dd > ';
 			}
 
-			$questions[] = '</ul>';
-			$answers[]   = '</dl>';
+			$questions[] = '</ol > ';
+			$questions[] = '</section>';
+
+			$answers[] = '</dl > ';
+			$answers[] = '</section>';
 		}
 
 		return implode( "\n", $questions ) . implode( "\n", $answers );

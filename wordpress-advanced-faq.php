@@ -12,6 +12,9 @@ License: GPL2
 if ( ! defined( 'ADVANCED_FAQ_PLUGIN_PATH' ) ) {
 	define( 'ADVANCED_FAQ_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 }
+if ( ! defined( 'ADVANCED_FAQ_PLUGIN_URL' ) ) {
+	define( 'ADVANCED_FAQ_PLUGIN_URL', WP_PLUGIN_URL . '/wordpress-advanced-faq' );
+}
 if ( ! defined( 'ADVANCED_FAQ_PLUGIN_NAME' ) ) {
 	define( 'ADVANCED_FAQ_PLUGIN_NAME', 'wordpress-advanced-faq' );
 }
