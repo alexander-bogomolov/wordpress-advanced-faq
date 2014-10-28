@@ -37,12 +37,12 @@ class AdvancedFaqShortcodes {
 	}
 
 	/**
-	 * @param array       $atts
-	 * @param string|null $content
+	 * @param string|array $atts
+	 * @param string|null  $content
 	 *
 	 * @return string
 	 */
-	public function addShortcode( array $atts, $content = NULL ) {
+	public function addShortcode( $atts, $content = NULL ) {
 
 		extract( shortcode_atts(
 				array(
