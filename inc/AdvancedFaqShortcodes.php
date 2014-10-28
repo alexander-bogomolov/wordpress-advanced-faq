@@ -160,6 +160,7 @@ class AdvancedFaqShortcodes {
 		$output  = array();
 		$results = $this->fetch();
 
+		$output[] = '<div class="advanced-faq-default">';
 		foreach ( $results as $category_slug => $entries ) {
 			/** @var WP_Post $post */
 
@@ -181,6 +182,7 @@ class AdvancedFaqShortcodes {
 			$output[] = '</dl>';
 			$output[] = '</section>';
 		}
+		$output[] = '</div>';
 
 		return implode( "\n", $output );
 	}
@@ -192,6 +194,7 @@ class AdvancedFaqShortcodes {
 		$questions = array();
 		$answers   = array();
 
+		$output[] = '<div class="advanced-faq-questions-first">';
 		foreach ( $results as $category_slug => $entries ) {
 			$questions[] = '<section id="' . 'faq-category-' . $entries[0]['category']->slug . '-questions' . '">';
 			$questions[] = '<h2 class="faq-category">' . $entries[0]['category']->name . '</h2>';
@@ -217,6 +220,7 @@ class AdvancedFaqShortcodes {
 			$answers[] = '</dl > ';
 			$answers[] = '</section>';
 		}
+		$output[] = '</div>';
 
 		return implode( "\n", $questions ) . implode( "\n", $answers );
 	}
