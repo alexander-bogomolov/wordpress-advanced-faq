@@ -176,7 +176,7 @@ class AdvancedFaqShortcodes {
 				$output[] = '<dt class="faq-question" id="' . $question_id . '">';
 				$output[] = $entry['post']->post_title;
 				$output[] = '</dt>';
-				$output[] = '<dd class="faql-answer">' . do_shortcode( $entry['post']->post_content ) . '</dd>';
+				$output[] = '<dd class="faq-answer">' . do_shortcode( $entry['post']->post_content ) . '</dd>';
 			}
 
 			$output[] = '</dl>';
