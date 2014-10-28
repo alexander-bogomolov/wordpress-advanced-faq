@@ -44,7 +44,8 @@ class AdvancedFaqShortcodes {
 
 		switch ( $layouts ) {
 			default:
-				$faqs = $this->renderDefinitionList();
+				//				$faqs = $this->renderDefinitionList();
+				$faqs = $this->renderSeparated();
 				break;
 		}
 
@@ -90,8 +91,8 @@ class AdvancedFaqShortcodes {
 			foreach ( $posts as $post ) {
 				/** @var WP_Post $post */
 				$categories = get_the_terms( $post->ID, 'advanced_faq_category' );
-				if ( $categories ) {
 
+				if ( $categories ) {
 					foreach ( $categories as $category ) {
 						if ( ! array_key_exists( $category->slug, $results ) ) {
 							$results[ $category->slug ] = array();
@@ -100,9 +101,9 @@ class AdvancedFaqShortcodes {
 						$results[ $category->slug ][] = array( 'category' => $category, 'post' => $post );
 					}
 				} else {
-					$category = new stdClass();
-					$category->slug = __('Other', ADVANCED_FAQ_PLUGIN_NAME);
-					$category->name = __('Other', ADVANCED_FAQ_PLUGIN_NAME);
+					$category            = new stdClass();
+					$category->slug      = __( 'Other', ADVANCED_FAQ_PLUGIN_NAME );
+					$category->name      = __( 'Other', ADVANCED_FAQ_PLUGIN_NAME );
 					$results['xother'][] = array( 'category' => $category, 'post' => $post );
 				}
 			}
@@ -122,26 +123,57 @@ class AdvancedFaqShortcodes {
 		$faqs    = array();
 		$results = $this->fetch();
 
-		$last_category = null;
 		foreach ( $results as $category_slug => $entries ) {
 			/** @var WP_Post $post */
 
+			$question_id = 'faq-category-' . $entries[0]['category']->slug;
+
+			$faqs[] = '<h2 id="' . $question_id . '">' . $entries[0]['category']->name . '</h2>';
+			$faqs[] = '<dl>';
+
 			foreach ( $entries as $entry ) {
+				$question_id = 'faq-question-' . $entry['category']->slug . '-' . $entry['post']->ID;
 
-				if ( $last_category !== $category_slug ) {
-					if ( $last_category !== null ) {
-						$faqs[] = '</dl>';
-					}
-					$faqs[]        = '<h2>' . $entry['category']->name . '</h2>';
-					$faqs[]        = '<dl>';
-					$last_category = $category_slug;
-				}
-
-				$faqs[] = '<dt>' . $entry['post']->post_title . '</dt><dd>' . $entry['post']->post_content . '</dd>';
+				$faqs[] = '<dt id="' . $question_id . '">' . $entry['post']->post_title . '</dt>';
+				$faqs[] = '<dd>' . $entry['post']->post_content . '</dd>';
 			}
+
+			$faqs[] = '</dl>';
 		}
 
 		return implode( "\n", $faqs );
+	}
+
+
+	public function renderSeparated() {
+
+		$results   = $this->fetch();
+		$questions = array();
+		$answers   = array();
+
+		foreach ( $results as $category_slug => $entries ) {
+			/** @var WP_Post $post */
+
+			$question_id = 'faq-category-' . $entries[0]['category']->slug;
+
+			$questions[] = '<h2 id="' . $question_id . '">' . $entries[0]['category']->name . '</h2>';
+			$questions[] = '<ul>';
+			$answers[] = '<h2 id="' . $question_id . '">' . $entries[0]['category']->name . '</h2>';
+			$answers[]   = '<dl>';
+
+			foreach ( $entries as $entry ) {
+				$question_id = 'faq-question-' . $entry['category']->slug . '-' . $entry['post']->ID;
+
+				$questions[] = '<li><a href="#' . $question_id . '">' . $entry['post']->post_title . '</a></li>';
+
+				$answers[] = '<dt>' . $entry['post']->post_title . '</dt><dd>' . $entry['post']->post_content . '</dd>';
+			}
+
+			$questions[] = '</ul>';
+			$answers[]   = '</dl>';
+		}
+
+		return implode( "\n", $questions ) . implode( "\n", $answers );
 	}
 }
 
