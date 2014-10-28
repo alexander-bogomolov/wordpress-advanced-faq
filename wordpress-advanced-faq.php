@@ -9,69 +9,23 @@ Author URI: http://bogomolov.de
 License: GPL2
 */
 
+if ( ! defined( 'ADVANCED_FAQ_PLUGIN_PATH' ) ) {
+	define( 'ADVANCED_FAQ_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+}
+if ( ! defined( 'ADVANCED_FAQ_PLUGIN_NAME' ) ) {
+	define( 'ADVANCED_FAQ_PLUGIN_NAME', 'wordpress-advanced-faq' );
+}
 
-require plugin_dir_path( __FILE__ ) . 'inc/post_type.inc';
-require plugin_dir_path( __FILE__ ) . 'inc/taxonomies.inc';
-require plugin_dir_path( __FILE__ ) . 'inc/shortcode.inc';
+require ADVANCED_FAQ_PLUGIN_PATH . 'inc/AdvancedFaqPostTypes.php';
+require ADVANCED_FAQ_PLUGIN_PATH . 'inc/AdvancedFaqTaxonomies.php';
+require ADVANCED_FAQ_PLUGIN_PATH . 'inc/AdvancedFaqShortcodes.php';
+require ADVANCED_FAQ_PLUGIN_PATH . 'inc/AdvancedFaq.php';
+
+$advancedFaq = new AdvancedFaq();
+$advancedFaq->init();
 
 
 
-
-//add_action( 'init', 'ebs_faq_init' );
-//function ebs_faq_init() {
-//	$faq_args = array(
-//		'labels'             => array(
-//			'name'               => _x( 'FAQs', 'post type general name' ),
-//			'singular_name'      => _x( 'FAQ', 'post type singular name' ),
-//			'add_new'            => _x( 'Add New', 'faq' ),
-//			'add_new_item'       => __( 'Add New FAQ' ),
-//			'edit_item'          => __( 'Edit FAQ' ),
-//			'new_item'           => __( 'New FAQ' ),
-//			'view_item'          => __( 'View FAQ' ),
-//			'search_items'       => __( 'Search FAQs' ),
-//			'not_found'          => __( 'No faqs found' ),
-//			'not_found_in_trash' => __( 'No faqs found in Trash' ),
-//			'parent_item_colon'  => ''
-//		),
-//		'public'             => TRUE,
-//		'publicly_queryable' => TRUE,
-//		'show_ui'            => TRUE,
-//		'query_var'          => TRUE,
-//		'rewrite'            => TRUE,
-//		'capability_type'    => 'page',
-//		'hierarchical'       => FALSE,
-//		'menu_position'      => NULL,
-//		'supports'           => array( 'title', 'editor' )
-//	);
-//	register_post_type( 'faq', $faq_args );
-//
-//
-//	register_taxonomy( 'tag', 'faq', array(
-//		'hierarchical' => FALSE,
-//		'labels'       => array(
-//			'name'                       => _x( 'Tags', 'taxonomy general name' ),
-//			'singular_name'              => _x( 'Tag', 'taxonomy singular name' ),
-//			'search_items'               => __( 'Search Tags' ),
-//			'popular_items'              => __( 'Popular Tags' ),
-//			'all_items'                  => __( 'All Tags' ),
-//			'parent_item'                => NULL,
-//			'parent_item_colon'          => NULL,
-//			'edit_item'                  => __( 'Edit Tag' ),
-//			'update_item'                => __( 'Update Tag' ),
-//			'add_new_item'               => __( 'Add New Tag' ),
-//			'new_item_name'              => __( 'New Tag Name' ),
-//			'separate_items_with_commas' => __( 'Separate tags with commas' ),
-//			'add_or_remove_items'        => __( 'Add or remove tags' ),
-//			'choose_from_most_used'      => __( 'Choose from the most used tags' )
-//		),
-//		'show_ui'      => TRUE,
-//		'query_var'    => TRUE,
-//		'rewrite'      => array( 'slug' => 'faq' )
-//	) );
-//}
-//
-//
-//
 ////add filter to insure the text FAQ, or faq, is displayed when user updates a faq
 //add_filter( 'post_updated_messages', 'ebs_faq_updated_messages' );
 //function ebs_faq_updated_messages( $messages ) {
