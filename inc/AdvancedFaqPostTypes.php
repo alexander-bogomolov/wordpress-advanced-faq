@@ -43,6 +43,7 @@ class AdvancedFaqPostTypes {
 			'exclude_from_search' => false,
 			'publicly_queryable'  => true,
 			'capability_type'     => 'page',
+      'rewrite'             => array( 'slug' => 'faq' ),
 		);
 		register_post_type( 'advanced_faq', $args );
 	}
