@@ -1,12 +1,24 @@
 <?php
 
+
+/**
+ * @author  Alexander Bogomolov <wordpress@bogomolov.de>
+ */
 class AdvancedFaqPostTypes {
 
 
+
+	/**
+	 *
+	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register' ), 0 );
 	}
 
+
+	/**
+	 *
+	 */
 	public function register() {
 
 		$labels = array(
@@ -30,18 +42,18 @@ class AdvancedFaqPostTypes {
 			'labels'              => $labels,
 			'supports'            => array( 'title', 'editor', 'author', ),
 			'taxonomies'          => array( 'advanced_faq_category', 'advanced_faq_tag' ),
-			'hierarchical'        => false,
-			'public'              => true,
-			'show_ui'             => true,
-			'show_in_menu'        => true,
-			'show_in_nav_menus'   => true,
-			'show_in_admin_bar'   => true,
+			'hierarchical'        => FALSE,
+			'public'              => TRUE,
+			'show_ui'             => TRUE,
+			'show_in_menu'        => TRUE,
+			'show_in_nav_menus'   => TRUE,
+			'show_in_admin_bar'   => TRUE,
 			'menu_position'       => 5,
-			'menu_icon'           => 'icon.png',
-			'can_export'          => true,
-			'has_archive'         => false,
-			'exclude_from_search' => false,
-			'publicly_queryable'  => true,
+//			'menu_icon'           => ADVANCED_FAQ_PLUGIN_URL . '/assets/images/icons/admin-menu.png',
+			'can_export'          => TRUE,
+			'has_archive'         => FALSE,
+			'exclude_from_search' => FALSE,
+			'publicly_queryable'  => TRUE,
 			'capability_type'     => 'page',
       'rewrite'             => array( 'slug' => 'faq' ),
 		);
