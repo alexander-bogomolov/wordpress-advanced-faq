@@ -95,7 +95,7 @@ class AdvancedFaqShortcodes {
 		$results = array();
 		$args    = array(
 			'post_type'              => 'advanced_faq',
-			'post_status'            => '1',
+			'post_status'            => 'publish',
 			//		's'                      => 'search_q',
 			'pagination'             => FALSE,
 			'orderby'                => array(
