@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name: Advanced FAQ
 Plugin URI: http://bogomolov.de
@@ -8,6 +9,8 @@ Author: Alexander Bogomolov
 Author URI: http://bogomolov.de
 License: GPL2
 */
+
+defined('ABSPATH') or die("No script kiddies please!");
 
 if ( ! defined( 'ADVANCED_FAQ_PLUGIN_PATH' ) ) {
 	define( 'ADVANCED_FAQ_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );

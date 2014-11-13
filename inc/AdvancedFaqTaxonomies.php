@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die("No script kiddies please!");
+
 /**
  * @author  Alexander Bogomolov <wordpress@bogomolov.de>
  */
