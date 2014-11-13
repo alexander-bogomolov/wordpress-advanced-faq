@@ -1,7 +1,7 @@
 <?php
 
 /*
-Plugin Name: Advanced FAQ
+Plugin Name: WordPress Advanced FAQ
 Plugin URI: http://bogomolov.de
 Description: Advanced Frequently Asked Questions system
 Version: 0.0.1
